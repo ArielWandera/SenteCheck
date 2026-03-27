@@ -113,7 +113,7 @@ Push to `main` → Railway rebuilds → `alembic upgrade head` runs → app rest
 ## Quickstart — Android app
 
 1. Open the `android/` folder in Android Studio.
-2. In `android/app/build.gradle`, set `buildConfigField` `API_BASE_URL` to your Railway URL (already set to a placeholder — change it before building).
+2. In `android/app/build.gradle`, `API_BASE_URL` is already set to the production Railway URL. Change it only if you are self-hosting.
 3. Build and install the APK on your Android phone (minSdk 26 / Android 8+).
 4. Open the app:
    - Grant SMS permissions when prompted.
