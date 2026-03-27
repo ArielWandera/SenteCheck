@@ -183,7 +183,12 @@ async def _send_classification_prompt(
 
 @router.post("/telegram", status_code=status.HTTP_200_OK)
 async def telegram_webhook(request: Request) -> dict:
-    data = await request.json()
-    update = Update.de_json(data, ptb_app.bot)
-    await ptb_app.process_update(update)
+    import logging
+    logger = logging.getLogger(__name__)
+    try:
+        data = await request.json()
+        update = Update.de_json(data, ptb_app.bot)
+        await ptb_app.process_update(update)
+    except Exception as e:
+        logger.exception("Error processing Telegram update: %s", e)
     return {"ok": True}
