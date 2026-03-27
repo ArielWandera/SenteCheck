@@ -15,7 +15,7 @@ android {
         versionName "1.0"
 
         // Backend URL injected at build time; override in local.properties or CI
-        buildConfigField "String", "API_BASE_URL", "\"https://your-railway-url.railway.app\""
+        buildConfigField "String", "API_BASE_URL", "\"https://sentecheck-production.up.railway.app/\""
     }
 
     buildTypes {
