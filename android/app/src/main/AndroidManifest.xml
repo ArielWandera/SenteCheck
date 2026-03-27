@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Declare telephony requirement BEFORE permissions to resolve lint warnings -->
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
     <!-- Required to receive and read incoming SMS -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
+
     <!-- Required to POST to the SenteCheck backend -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- App works without a SIM (e.g. tablets), SMS forwarding just won't fire -->
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
-
     <application
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
