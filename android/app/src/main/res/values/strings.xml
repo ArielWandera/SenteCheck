@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SenteCheck</string>
+    <string name="app_tagline">Track your betting finances via SMS</string>
+
+    <!-- Labels -->
+    <string name="label_telegram_id">Your Telegram User ID</string>
+    <string name="label_webhook_secret">Webhook Secret</string>
+    <string name="label_api_url">API URL</string>
+
+    <!-- Hints -->
+    <string name="hint_telegram_id">e.g. 123456789</string>
+    <string name="hint_webhook_secret">Secret from /start in the bot</string>
+    <string name="hint_api_url">https://your-app.railway.app/</string>
+
+    <!-- Buttons -->
+    <string name="btn_connect">Save &amp; Connect</string>
+
+    <!-- Status messages -->
+    <string name="status_connected">Connected — SMS forwarding is active</string>
+    <string name="status_not_connected">Not connected</string>
+
+    <!-- Permission messages -->
+    <string name="permission_required">SMS permission required — tap Allow when prompted</string>
+    <string name="permission_granted">SMS permission granted</string>
+    <string name="permission_denied">SMS permission denied — forwarding will not work</string>
+
+    <!-- Validation errors -->
+    <string name="error_telegram_id_required">Telegram ID is required</string>
+    <string name="error_telegram_id_invalid">Enter a valid numeric Telegram ID</string>
+    <string name="error_secret_required">Webhook secret is required</string>
+    <string name="error_api_url_invalid">Enter a valid URL starting with https://</string>
+</resources>
