@@ -36,31 +36,31 @@ def _to_decimal(raw: str) -> Decimal | None:
 # Regex patterns — each is (sim_label, direction, compiled_pattern).
 # Named groups:  amount (required), merchant (optional), balance (optional).
 #
-# Real SMS samples (Uganda, March 2026):
+# Real SMS samples (Uganda, March 2026) — names, numbers and balances anonymised:
 #
-# MTN out person:    "Y'ello. You have sent UGX 2,000 to 256750066399, ESTELLA,WANDERA.
-#                     Fee:UGX 100.00. Transaction ID:... Your Mobile Money balance is now UGX 45,845.62."
-# MTN out business:  "Y'ello. ELIA INVESTMENTS LIMITED has deducted UGX 10000 at a fee of UGX 550
-#                     Transaction ID: ... New balance is:UGX 4946."
-# MTN out withdraw:  "You have withdrawn UGX 25,000 on 2026-03-25 11:51:59. Fee: UGX 880, Tax: UGX 125.
-#                     New balance: UGX 28,945.62."
-# MTN in  business:  "You have deposited UGX 650000 from ELIA INVESTMENTS LIMITED on 2026-02-20 11:34:15.
-#                     New balance: UGX 786818."
-# MTN in  cross-net: "You have received UGX 40000 from Airtel Money on 2026-03-27 23:06:11. fee:0.
-#                     Reason: ESTELLA WANDERA , 0750066399. New balance: UGX 47946."
+# MTN out person:    "Y'ello. You have sent UGX 2,000 to 2567XXXXXXXX, JOHN,DOE.
+#                     Fee:UGX 100.00. Transaction ID:... Your Mobile Money balance is now UGX 10,000.00."
+# MTN out business:  "Y'ello. EXAMPLE BUSINESS LTD has deducted UGX 10000 at a fee of UGX 550
+#                     Transaction ID: ... New balance is:UGX 5,000."
+# MTN out withdraw:  "You have withdrawn UGX 25,000 on 2026-XX-XX XX:XX:XX. Fee: UGX 880, Tax: UGX 125.
+#                     New balance: UGX 10,000.00."
+# MTN in  business:  "You have deposited UGX 50000 from EXAMPLE BUSINESS LTD on 2026-XX-XX XX:XX:XX.
+#                     New balance: UGX 100,000."
+# MTN in  cross-net: "You have received UGX 40000 from Airtel Money on 2026-XX-XX XX:XX:XX. fee:0.
+#                     Reason: JOHN DOE , 07XXXXXXXX. New balance: UGX 50,000."
 #
 # Airtel in  deposit: "CASH DEPOSIT of UGX 2,000 from  MTN MOBILE MONEY UGANDA LTD.
-#                      Bal UGX 278,767. TID 143779280993."
-# Airtel out person:  "SENT UGX 40,000 to ARIEL EMMANUEL WANDERA on 256778556703.
-#                      Fee UGX 500.0 Bal UGX 276,767."  ← also covers business sends
-# Airtel out withdraw:"WITHDRAWN. TID 142289013602. UGX25,000 with Agent ID: 234328.
-#                      Fee UGX 880.Tax UGX 125.Bal UGX 458,402."
+#                      Bal UGX 10,000. TID XXXXXXXXXXXX."
+# Airtel out person:  "SENT UGX 40,000 to JOHN DOE on 2567XXXXXXXX.
+#                      Fee UGX 500.0 Bal UGX 10,000."  ← also covers business sends
+# Airtel out withdraw:"WITHDRAWN. TID XXXXXXXXXXXX. UGX25,000 with Agent ID: XXXXXX.
+#                      Fee UGX 880.Tax UGX 125.Bal UGX 10,000."
 # ---------------------------------------------------------------------------
 _PATTERNS: list[tuple[str, str, re.Pattern]] = [
 
     # ── MTN — outgoing person-to-person ─────────────────────────────────────
-    # "You have sent UGX 2,000 to 256750066399, ESTELLA,WANDERA.
-    #  ... Your Mobile Money balance is now UGX 45,845.62."
+    # "You have sent UGX 2,000 to 2567XXXXXXXX, JOHN,DOE.
+    #  ... Your Mobile Money balance is now UGX 10,000.00."
     (
         "MTN",
         "out",
@@ -73,8 +73,8 @@ _PATTERNS: list[tuple[str, str, re.Pattern]] = [
     ),
 
     # ── MTN — outgoing business deduction ───────────────────────────────────
-    # "ELIA INVESTMENTS LIMITED has deducted UGX 10000 at a fee of UGX 550
-    #  ... New balance is:UGX 4946."
+    # "EXAMPLE BUSINESS LTD has deducted UGX 10000 at a fee of UGX 550
+    #  ... New balance is:UGX 5,000."
     (
         "MTN",
         "out",
@@ -99,8 +99,8 @@ _PATTERNS: list[tuple[str, str, re.Pattern]] = [
     ),
 
     # ── MTN — incoming deposit from business ────────────────────────────────
-    # "You have deposited UGX 650000 from ELIA INVESTMENTS LIMITED  on 2026-02-20 11:34:15.
-    #  New balance: UGX 786818."
+    # "You have deposited UGX 50000 from EXAMPLE BUSINESS LTD on 2026-XX-XX XX:XX:XX.
+    #  New balance: UGX 100,000."
     (
         "MTN",
         "in",
@@ -113,8 +113,8 @@ _PATTERNS: list[tuple[str, str, re.Pattern]] = [
     ),
 
     # ── MTN — incoming cross-network from person ─────────────────────────────
-    # "You have received UGX 40000 from Airtel Money on 2026-03-27 23:06:11. fee:0.
-    #  Reason: ESTELLA WANDERA , 0750066399. New balance: UGX 47946."
+    # "You have received UGX 40000 from Airtel Money on 2026-XX-XX XX:XX:XX. fee:0.
+    #  Reason: JOHN DOE , 07XXXXXXXX. New balance: UGX 50,000."
     (
         "MTN",
         "in",
@@ -168,8 +168,8 @@ _PATTERNS: list[tuple[str, str, re.Pattern]] = [
     ),
 
     # ── Airtel — outgoing send (person or business) ──────────────────────────
-    # "SENT UGX 40,000 to ARIEL EMMANUEL WANDERA on 256778556703.
-    #  Fee UGX 500.0 Bal UGX 276,767."
+    # "SENT UGX 40,000 to JOHN DOE on 2567XXXXXXXX.
+    #  Fee UGX 500.0 Bal UGX 10,000."
     (
         "Airtel",
         "out",
@@ -182,8 +182,8 @@ _PATTERNS: list[tuple[str, str, re.Pattern]] = [
     ),
 
     # ── Airtel — outgoing cash withdrawal at agent ───────────────────────────
-    # "WITHDRAWN. TID 142289013602. UGX25,000 with Agent ID: 234328.
-    #  Fee UGX 880.Tax UGX 125.Bal UGX 458,402."
+    # "WITHDRAWN. TID XXXXXXXXXXXX. UGX25,000 with Agent ID: XXXXXX.
+    #  Fee UGX 880.Tax UGX 125.Bal UGX 10,000."
     (
         "Airtel",
         "out",
